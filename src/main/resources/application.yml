@@ -1,0 +1,20 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    username: root
+    password: root
+    driver-class-name: com.p6spy.engine.spy.P6SpyDriver
+    url: jdbc:p6spy:mysql://127.0.0.1:3306/shiro-test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&autoReconnect=true&failOverReadOnly=false&serverTimezone=GMT%2B8
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  redis:
+    host: 127.0.0.1
+    port: 6379
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.zhongpeiqi.dao
+  configuration:
+    map-underscore-to-camel-case: true

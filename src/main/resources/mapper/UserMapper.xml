@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhongpeiqi.mapper.UserMapper">
+
+    <select id="selectPageVo" resultType="com.zhongpeiqi.entity.vo.UserVo">
+        SELECT
+            username, real_name, create_time, update_time
+        FROM
+            tbl_user
+        WHERE 1 = 1
+        <if test="ud.username != null and ud.username != '' ">
+            AND username = #{ud.username}
+        </if>
+        <if test="ud.realName != null and ud.realName != '' ">
+            AND real_name = #{ud.realName}
+        </if>
+    </select>
+</mapper>
