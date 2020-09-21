@@ -1,10 +1,12 @@
-package com.zhongpeiqi.shiro;
+package com.zhongpeiqi.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.zhongpeiqi.common.code.CommonCode;
 import com.zhongpeiqi.common.response.ResponseResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.springframework.http.HttpMethod;
@@ -25,9 +27,11 @@ import java.io.PrintWriter;
  * 我们可以看到其实这个roles的filter是通过subject.hasAllRoles(roles)判断是否满足所有权限,但是我们真实项目中,很多时候用户只要满足其中一个角色即可认为是授权认证成功。
  * apache shiro 的角色过滤是 and的关系，需要重新写成or的关系。
  */
+@Slf4j
 public class CustomRolesAuthorizationFilter extends RolesAuthorizationFilter {
     @Override
     public boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) throws IOException {
+        log.info("开始自定义filter");
         Subject subject = getSubject(request, response);
         String[] rolesArray = (String[]) mappedValue;
         // 如果有角色限制，只满足一个角色即视为授权通过

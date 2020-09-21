@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 
 @SpringBootApplication
 @MapperScan("com.zhongpeiqi.mapper")
-@ComponentScan(basePackages = {"cn.hutool.extra.spring"})
 public class ShiroSessionTestApplication {
     public static void main(String[] args) {
         SpringApplication.run(ShiroSessionTestApplication.class, args);

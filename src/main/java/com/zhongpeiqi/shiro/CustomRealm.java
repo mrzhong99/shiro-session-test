@@ -41,9 +41,9 @@ public class CustomRealm extends AuthorizingRealm {
     private PermService permService;
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        String username = (String) principals.getPrimaryPrincipal();
-        List<Role> roles = roleService.getByUsername(username);
-        List<Perm> perms = permService.getByUsername(username);
+        User user = (User) principals.getPrimaryPrincipal();
+        List<Role> roles = roleService.getByUsername(user.getUsername());
+        List<Perm> perms = permService.getByUsername(user.getUsername());
         if (CollectionUtils.isEmpty(roles) && CollectionUtils.isEmpty(perms)) {
             return null;
         }

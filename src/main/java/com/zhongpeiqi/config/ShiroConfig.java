@@ -1,32 +1,32 @@
 package com.zhongpeiqi.config;
 
 import com.zhongpeiqi.common.properties.RedisProperties;
+import com.zhongpeiqi.filter.MyFormAuthenticationFilter;
 import com.zhongpeiqi.shiro.CustomRealm;
-import com.zhongpeiqi.shiro.CustomRolesAuthorizationFilter;
+import com.zhongpeiqi.filter.CustomRolesAuthorizationFilter;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.web.filter.authz.RolesAuthorizationFilter;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.checkerframework.checker.units.qual.C;
 import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 import javax.servlet.Filter;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
 @Configuration
+@ComponentScan(basePackages = {"cn.hutool.extra.spring"})
+@Import(cn.hutool.extra.spring.SpringUtil.class)
 public class ShiroConfig {
     private static final String CACHE_KEY = "shiro:cache:";
     private static final String SESSION_KEY = "shiro:session:";
@@ -41,22 +41,20 @@ public class ShiroConfig {
        customRealm.setAuthorizationCachingEnabled(false);
        return customRealm;
    }
-   @Bean
-   public CustomRolesAuthorizationFilter rolesAuthorizationFilter() {
-       return new CustomRolesAuthorizationFilter();
-   }
 
     @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         Map<String, Filter> filterMap = new LinkedHashMap<>(1);
-        filterMap.put("roles", rolesAuthorizationFilter());
+        filterMap.put("roles", new CustomRolesAuthorizationFilter());
+        filterMap.put("authc", new MyFormAuthenticationFilter());
         shiroFilterFactoryBean.setFilters(filterMap);
         Map<String, String> filterChain = new LinkedHashMap<>();
-        filterChain.put("/logout", "logout");
         filterChain.put("/login", "anon");
-        filterChain.put("/**", "roles");
+        filterChain.put("/logout", "logout");
+        filterChain.put("/user/list_custom", "roles[admin,user]");
+        filterChain.put("/**", "authc");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChain);
         return shiroFilterFactoryBean;
     }
@@ -96,7 +94,6 @@ public class ShiroConfig {
     public RedisManager redisManager(RedisProperties redisProperties) {
         RedisManager redisManager = new RedisManager();
         redisManager.setHost(redisProperties.getHost());
-        redisManager.setPort(redisProperties.getPort());
         return redisManager;
     }
 

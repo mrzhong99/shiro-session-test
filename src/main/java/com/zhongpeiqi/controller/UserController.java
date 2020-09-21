@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @PostMapping("/list_custom")
-    @RequiresRoles("admin")
+    //@RequiresRoles({"admin", "user"})
     public Response getPageUserCustom(@RequestBody @Validated UserDTO userDTO) {
        return userService.getUserPageCustom(userDTO);
     }

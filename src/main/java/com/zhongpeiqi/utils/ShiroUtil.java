@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Collection;
 import java.util.Objects;
 
-@Import(cn.hutool.extra.spring.SpringUtil.class)
+
 public class ShiroUtil {
     private static final RedisSessionDAO redisSessionDAO = SpringUtil.getBean(RedisSessionDAO.class);
 
